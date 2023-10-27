@@ -22,8 +22,6 @@ def run_app():
 @app.route('/Dash')
 def run_dash():
     #plot 3 (plotting by types of attacks)
-    import matplotlib.pyplot as plt 
-    import requests
 
     url="https://raw.githubusercontent.com/MarcelinoCodes/CSP/main/malicious_phish.csv"
 
