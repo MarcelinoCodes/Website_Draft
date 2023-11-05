@@ -10,13 +10,13 @@ def run_app():
     elif request.method=='POST':
         text = request.form['text']
         if '.com' in text:
-            result="SAFE"
+            result="https://i.ibb.co/0hk28GL/check.png"
         elif '.net' in text:
-            result="SAFE"
+            result="https://i.ibb.co/0hk28GL/check.png"
         elif '.org' in text:
-            result="SAFE"
+            result="https://i.ibb.co/0hk28GL/check.png"
         else:
-            result="MALICIOUS"
+            result="https://i.ibb.co/PjrWmJm/cross.png"
         return render_template('index.html',text=text,result=result)
     
 @app.route('/Dash')
