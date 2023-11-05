@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Cyber Security</title>
+    <script src="https://d3js.org/d3.v4.js"></script>
+
+
+
+    <style media="screen">
+    /* Reset some default styles */
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Style the navigation bar */
+    nav {
+        background-color: #333; /* Background color */
+        color: #fff; /* Text color */
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center; /* Vertically center the content */
+        padding: 10px 20px;
+    }
+
+    .menu-toggle {
+        display: none; /* Hide the hamburger button by default */
+        flex-direction: column;
+        cursor: pointer;
+    }
+
+    .bar {
+        width: 25px;
+        height: 3px;
+        background-color: #fff;
+        margin: 3px 0;
+        border-radius: 3px;
+    }
+
+    .menu {
+        list-style-type: none;
+        text-align: center;
+        display: flex;
+        margin: 0;
+        padding: 0;
+        /* Center the list items horizontally and vertically */
+        justify-content: center;
+        align-items: center;
+        height: 100%; /* Ensure list items occupy full height of the navigation bar */
+    }
+
+    .menu li {
+        margin: 0 20px;
+    }
+
+    .menu a {
+        text-decoration: none;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    /* Change link color on hover */
+    .menu a:hover {
+        color: #f1f1f1;
+    }
+
+    /* Media query for screens less than 800px wide */
+    @media (max-width: 800px) {
+        .menu {
+            display: none; /* Hide the menu items by default */
+            flex-direction: column;
+            background-color: #333;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .menu.active {
+            display: flex; /* Show the menu items when the menu is active */
+        }
+
+        .menu-toggle {
+            display: flex; /* Show the hamburger button only when the screen width is less than 800px */
+        }
+    }
+    </style>
+
+
+
+</head>
+<body>
+  <nav>
+      <div class="navbar">
+          <div class="menu-toggle" id="menuToggle">
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+          </div>
+            <ul class="menu" id="menu" style="margin-left: 39%;">
+                <li><a href="{{url_for('run_app')}}">Application</a></li>
+                <li><a href="{{url_for('run_dash')}}">Dashboard</a></li>
+                <li><a href="{{url_for('run_team')}}">Team</a></li>
+                <li><a href="{{url_for('run_learn')}}">Learn More</a></li>
+            </ul>
+      </div>
+  </nav>
+    
+  <div id="my_dataviz"></div>
+
+
+</body>
+
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function () {
+  const menuToggle = document.getElementById("menuToggle");
+  const menu = document.getElementById("menu");
+
+  menuToggle.addEventListener("click", function () {
+      menu.classList.toggle("active");
+  });
+});
+
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 90, left: 40},
+    width = 460 - margin.left - margin.right,
+    height = 450 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+// Parse the Data
+d3.csv("https://raw.githubusercontent.com/MarcelinoCodes/CSP/main/file.csv", function(data) {
+
+// X axis
+var x = d3.scaleBand()
+  .range([ 0, width ])
+  .domain(data.map(function(d) { return d.Country; }))
+  .padding(0.2);
+svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+  .call(d3.axisBottom(x))
+  .selectAll("text")
+    .attr("transform", "translate(-10,0)rotate(-45)")
+    .style("text-anchor", "end");
+
+// Add Y axis
+var y = d3.scaleLinear()
+  .domain([0, 1])
+  .range([ height, 0]);
+svg.append("g")
+  .call(d3.axisLeft(y));
+
+// Bars
+svg.selectAll("mybar")
+  .data(data)
+  .enter()
+  .append("rect")
+    .attr("x", function(d) { return x(d.Country); })
+    .attr("width", x.bandwidth())
+    .attr("fill", "#69b3a2")
+    // no bar at the beginning thus:
+    .attr("height", function(d) { return height - y(0); }) // always equal to 0
+    .attr("y", function(d) { return y(0); })
+
+// Animation
+svg.selectAll("rect")
+  .transition()
+  .duration(800)
+  .attr("y", function(d) { return y(d.Value); })
+  .attr("height", function(d) { return height - y(d.Value); })
+  .delay(function(d,i){console.log(i) ; return(i*100)})
+
+})
+</script>
+</html>
