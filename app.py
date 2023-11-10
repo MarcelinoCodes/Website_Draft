@@ -17,6 +17,7 @@ def run_app():
             result="https://i.ibb.co/0hk28GL/check.png"
         else:
             result="https://i.ibb.co/PjrWmJm/cross.png"
+
         return render_template('index.html',text=text,result=result)
     
 @app.route('/Dash')
